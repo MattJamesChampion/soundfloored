@@ -32,5 +32,7 @@ def main():
     if settings.interface == "keyboard":
         interface = KeyboardInterface(music_logic)
 
+    interface.start()
+
 if __name__ == "__main__":
     main()
