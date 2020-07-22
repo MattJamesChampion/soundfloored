@@ -26,6 +26,22 @@ class MusicLogic:
         if len(self.banks) > 0:
             self.current_bank_position = 0
 
+    def increment_bank(self):
+        maximum_bank_position = len(self.banks) - 1
+        if self.current_bank_position >= maximum_bank_position:
+            self.current_bank_position = 0
+        else:
+            self.current_bank_position += 1
+        return self.get_current_bank()
+        
+    def decrement_bank(self):
+        maximum_bank_position = len(self.banks) - 1
+        if self.current_bank_position == 0:
+            self.current_bank_position = maximum_bank_position
+        else:
+            self.current_bank_position -= 1
+        return self.get_current_bank()
+
     def get_current_bank(self):
         return self.banks[self.current_bank_position]
 
