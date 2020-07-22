@@ -17,6 +17,12 @@ class MusicLogic:
         self.root_audio_directory = root_audio_directory
         self.banks = []
 
+        self.load_banks()
+
+        self.current_bank = None
+        if len(self.banks) > 0:
+            self.current_bank = 0
+
         pygame.init()
         pygame.mixer.init()
 
