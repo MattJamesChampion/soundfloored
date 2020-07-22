@@ -20,7 +20,6 @@ class MusicLogic:
         self.current_bank_position = None
 
         pygame.init()
-        pygame.mixer.init()
 
         self.load_banks()
 
@@ -39,6 +38,8 @@ class MusicLogic:
         self._current_bank = value
 
     def load_banks(self):
+        pygame.mixer.init()
+        
         banks = []
         for bank in os.listdir(self.root_audio_directory):
             bank_path = os.path.join(self.root_audio_directory, bank)
