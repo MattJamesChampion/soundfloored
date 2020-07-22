@@ -16,7 +16,8 @@ class MusicLogic:
             bank_path = os.path.join(self.root_audio_directory, bank)
             clips = []
             for clip in os.listdir(bank_path):
-                clips.append(os.path.join(self.root_audio_directory, clip))
+                clip_path = os.path.join(bank_path, clip)
+                clips.append(clip_path)
 
             banks.append(Bank(bank_path, clips))
 
