@@ -1,4 +1,5 @@
 import configparser
+from soundfloored.music_logic import MusicLogic
 
 class Settings:
     def __init__(self, config_parser):
@@ -16,6 +17,8 @@ def get_settings(path):
 
 def main():
     settings = get_settings("settings.ini")
+
+    MusicLogic(settings.root_audio_directory)
 
 if __name__ == "__main__":
     main()
