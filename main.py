@@ -1,5 +1,6 @@
 import configparser
 from soundfloored.music_logic import MusicLogic
+from soundfloored.interfaces.keyboard_interface import KeyboardInterface
 
 class Settings:
     def __init__(self, config_parser):
