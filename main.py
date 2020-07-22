@@ -19,7 +19,6 @@ def main():
     settings = get_settings("settings.ini")
 
     music_logic = MusicLogic(settings.root_audio_directory)
-    music_logic.load_banks()
 
 if __name__ == "__main__":
     main()
