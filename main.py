@@ -18,7 +18,7 @@ def get_settings(path):
 def main():
     settings = get_settings("settings.ini")
 
-    MusicLogic(settings.root_audio_directory)
+    music_logic = MusicLogic(settings.root_audio_directory)
 
 if __name__ == "__main__":
     main()
