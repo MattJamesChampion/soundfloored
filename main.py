@@ -26,5 +26,10 @@ def main():
 
     music_logic = MusicLogic(settings.root_audio_directory)
 
+    interface = None
+
+    if settings.interface == "keyboard":
+        interface = KeyboardInterface(music_logic)
+
 if __name__ == "__main__":
     main()
