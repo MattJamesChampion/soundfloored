@@ -5,11 +5,20 @@ class Bank:
     def __init__(self, name, clips):
         self.name = name
         self.clips = clips
+    
+    def play_clip(self, position):
+        #TODO: Increase number of channels if position is greater than the default of 10
+        clip = self.clips[position - 1]
+        pygame.mixer.Channel(position).play(clip)
+        
 
 class MusicLogic:
     def __init__(self, root_audio_directory):
         self.root_audio_directory = root_audio_directory
         self.banks = []
+
+        pygame.init()
+        pygame.mixer.init()
 
     def load_banks(self):
         banks = []
