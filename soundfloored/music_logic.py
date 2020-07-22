@@ -27,6 +27,9 @@ class MusicLogic:
         if len(self.banks) > 0:
             self.current_bank_position = 0
 
+    def get_current_bank(self):
+        return self.banks[self.current_bank_position]
+
     @property
     def current_bank_position(self):
         return self._current_bank
