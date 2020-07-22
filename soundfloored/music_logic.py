@@ -39,3 +39,8 @@ class MusicLogic:
             banks.append(Bank(bank_path, clips))
 
         self.banks = banks
+
+        if self.current_bank > len(self.banks) - 1:
+            # We may have loaded fewer banks than before. If that's the case,
+            # we need to reset the current bank to avoid an IndexError
+            self.current_bank = 0
