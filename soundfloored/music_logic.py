@@ -12,7 +12,7 @@ class MusicLogic:
 
     def load_banks(self):
         banks = []
-        for bank in [f for f in os.listdir(self.root_audio_directory)]:
+        for bank in os.listdir(self.root_audio_directory):
             bank_path = os.path.join(self.root_audio_directory, bank)
             clips = []
             for clip in os.listdir(bank_path):
