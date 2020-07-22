@@ -17,7 +17,7 @@ class MusicLogic:
         self.root_audio_directory = root_audio_directory
         self.banks = []
 
-        self.current_bank = None
+        self.current_bank_position = None
 
         pygame.init()
         pygame.mixer.init()
@@ -25,14 +25,14 @@ class MusicLogic:
         self.load_banks()
 
         if len(self.banks) > 0:
-            self.current_bank = 0
+            self.current_bank_position = 0
 
     @property
-    def current_bank(self):
+    def current_bank_position(self):
         return self._current_bank
 
-    @current_bank.setter
-    def current_bank(self, value):
+    @current_bank_position.setter
+    def current_bank_position(self, value):
         self._current_bank = value
 
     def load_banks(self):
@@ -50,9 +50,9 @@ class MusicLogic:
         self.banks = banks
 
         try:
-            if self.current_bank > len(self.banks) - 1:
+            if self.current_bank_position > len(self.banks) - 1:
                 # We may have loaded fewer banks than before. If that's the case,
                 # we need to reset the current bank to avoid an IndexError
-                self.current_bank = 0
+                self.current_bank_position = 0
         except TypeError:
             pass
