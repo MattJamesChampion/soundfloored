@@ -1,4 +1,5 @@
 import os
+import pygame
 
 class Bank:
     def __init__(self, name, clips):
@@ -17,7 +18,8 @@ class MusicLogic:
             clips = []
             for clip in os.listdir(bank_path):
                 clip_path = os.path.join(bank_path, clip)
-                clips.append(clip_path)
+                clip_sound = pygame.mixer.Sound(clip_path)
+                clips.append(clip_sound)
 
             banks.append(Bank(bank_path, clips))
 
