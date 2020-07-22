@@ -6,7 +6,13 @@ class Settings:
         try:
             self.root_audio_directory = config_parser["DEFAULT"]["RootAudioDirectory"]
         except KeyError:
-            print("Could not find the root audio directory")
+            print("Could not find the root audio directory setting")
+            raise
+
+        try:
+            self.interface = config_parser["DEFAULT"]["Interface"]
+        except KeyError:
+            print("Could not find the interface setting")
             raise
 
 def get_settings(path):
