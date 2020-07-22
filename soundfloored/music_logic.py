@@ -8,7 +8,7 @@ class Bank:
     
     def play_clip(self, position):
         #TODO: Increase number of channels if position is greater than the default of 10
-        clip = self.clips[position - 1]
+        clip = self.clips[position]
         pygame.mixer.Channel(position).play(clip)
         
 
