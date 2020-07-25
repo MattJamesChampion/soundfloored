@@ -27,6 +27,8 @@ class KeyboardInterface:
                         self.music_logic.decrement_bank()
                     if event.key == pygame.K_r:
                         self.music_logic.increment_bank()
+                    if event.key == pygame.K_SPACE:
+                        self.music_logic.stop_all_clips()
                     try:
                         clip_position = available_clip_keys.index(event.key)
                         self.music_logic.play_clip(clip_position)

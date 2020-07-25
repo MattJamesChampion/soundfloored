@@ -33,7 +33,6 @@ class GuiInterface:
         button_move_previous_repeat_style.pack(side=tkinter.LEFT, expand=True, fill=tkinter.BOTH)
         button_move_next_repeat_style = tkinter.Button(repeat_style_frame, text="Repeat Style ->", command=self.music_logic.move_next_repeat_style)
         button_move_next_repeat_style.pack(side=tkinter.LEFT, expand=True, fill=tkinter.BOTH)
-        
 
         audio_clip_button_frame = tkinter.Frame()
         audio_clip_button_frame.pack(expand=True, fill=tkinter.BOTH)
@@ -46,5 +45,11 @@ class GuiInterface:
             button = tkinter.Button(audio_clip_button_frame, text=str(position), command=partial(self.music_logic.play_clip, position))
             button.pack(side=tkinter.LEFT, expand=True, fill=tkinter.BOTH)
             audio_clip_buttons.append(button)
+
+        stop_frame = tkinter.Frame()
+        stop_frame.pack(expand=True, fill=tkinter.BOTH)
+
+        button_stop = tkinter.Button(stop_frame, text="Stop", command=self.music_logic.stop_all_clips)
+        button_stop.pack(side=tkinter.LEFT, expand=True, fill=tkinter.BOTH)
 
         body.mainloop()

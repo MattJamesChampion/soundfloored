@@ -181,3 +181,6 @@ class MusicLogic:
                 self.current_bank_position = 0
         except TypeError:
             pass
+
+    def stop_all_clips(self):
+        pygame.mixer.stop()
