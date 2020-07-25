@@ -27,8 +27,10 @@ class Bank:
             full_clip_path = os.path.join(path, relative_clip_path)
             clips.append(Clip(full_clip_path))
 
-        self.name = path
+        self.name = os.path.basename(os.path.normpath(path))
         self.clips = clips
+
+        self._logger.debug(f"Bank {self.name} loaded with {len(self.clips)} elements")
 
 class MusicLogic:
     def __init__(self, root_audio_directory):
