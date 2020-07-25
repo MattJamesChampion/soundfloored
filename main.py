@@ -1,6 +1,7 @@
 import configparser
 from soundfloored.music_logic import MusicLogic
 from soundfloored.interfaces.keyboard_interface import KeyboardInterface
+from soundfloored.interfaces.gui_interface import GuiInterface
 
 class Settings:
     def __init__(self, config_parser):
@@ -31,6 +32,8 @@ def main():
 
     if settings.interface == "keyboard":
         interface = KeyboardInterface(music_logic)
+    elif settings.interface == "gui":
+        interface = GuiInterface(music_logic)
 
     interface.start()
 
