@@ -32,10 +32,14 @@ class Clip:
 
         self._logger.debug(f"Loading clip {path}")
 
-        self.name = MusicLogicHelpers.clean_name(os.path.basename(os.path.normpath(path)))
-        self.sound = pygame.mixer.Sound(path)
+        try:
+            self.name = MusicLogicHelpers.clean_name(os.path.basename(os.path.normpath(path)))
+            self.sound = pygame.mixer.Sound(path)
 
-        self._logger.debug(f"Clip {self.name} loaded")
+            self._logger.debug(f"Clip {self.name} loaded")
+        except:
+            self._logger.error(f"Error loading clip with path {path}")
+            raise
 
 class Bank:
     def __init__(self, path):
@@ -43,15 +47,23 @@ class Bank:
 
         self._logger.debug(f"Loading bank {path}")
 
-        clips = []
-        for relative_clip_path in os.listdir(path):
-            full_clip_path = os.path.join(path, relative_clip_path)
-            clips.append(Clip(full_clip_path))
+        try:
+            clips = []
+            for relative_clip_path in os.listdir(path):
+                full_clip_path = os.path.join(path, relative_clip_path)
+                try:
+                    clip = Clip(full_clip_path)
+                    clips.append(clip)
+                except:
+                    self._logger.error(f"Clip could not be loaded with path {full_clip_path}, skipping")
 
-        self.name = MusicLogicHelpers.clean_name(os.path.basename(os.path.normpath(path)))
-        self.clips = clips
+            self.name = MusicLogicHelpers.clean_name(os.path.basename(os.path.normpath(path)))
+            self.clips = clips
 
-        self._logger.debug(f"Bank {self.name} loaded with {len(self.clips)} elements")
+            self._logger.debug(f"Bank {self.name} loaded with {len(self.clips)} elements")
+        except:
+            self._logger.error(f"Error loading bank with path {path}")
+            raise
 
 class MusicLogic:
     def __init__(self, root_audio_directory):
@@ -151,7 +163,11 @@ class MusicLogic:
         
         for relative_bank_path in os.listdir(self.root_audio_directory):
             full_bank_path = os.path.join(self.root_audio_directory, relative_bank_path)
-            banks.append(Bank(full_bank_path))
+            try:
+                bank = Bank(full_bank_path)
+                banks.append(bank)
+            except:
+                self._logger.error(f"Bank could not be loaded with path {full_bank_path}, skipping")
 
         self.banks = banks
 
