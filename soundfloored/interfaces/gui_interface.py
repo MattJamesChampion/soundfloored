@@ -7,10 +7,6 @@ class GuiInterface:
     def __init__(self, music_logic):
         self.music_logic = music_logic
 
-    def get_and_play_clip(self, position):
-        current_bank = self.music_logic.get_current_bank()
-        current_bank.play_clip(position, self.music_logic.repeat_style)
-
     def start(self):
         pygame.display.init()
         screen = pygame.display.set_mode((1,1))
@@ -44,7 +40,7 @@ class GuiInterface:
         audio_clip_buttons = []
 
         for position in range(len(self.music_logic.get_current_bank().clips)):
-            button = tkinter.Button(audio_clip_button_frame, text=str(position), command=partial(self.get_and_play_clip, position))
+            button = tkinter.Button(audio_clip_button_frame, text=str(position), command=partial(self.music_logic.play_clip, position))
             button.pack(side=tkinter.LEFT, expand=True, fill=tkinter.BOTH)
             audio_clip_buttons.append(button)
 

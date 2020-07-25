@@ -1,5 +1,4 @@
 import pygame
-from ..music_logic import RepeatStyle
 
 class KeyboardInterface:
     def __init__(self, music_logic):
@@ -30,7 +29,6 @@ class KeyboardInterface:
                         self.music_logic.increment_bank()
                     try:
                         clip_position = available_clip_keys.index(event.key)
-                        current_bank = self.music_logic.get_current_bank()
-                        current_bank.play_clip(clip_position, self.music_logic.repeat_style)
+                        self.music_logic.play_clip(clip_position)
                     except (IndexError, ValueError):
                         pass

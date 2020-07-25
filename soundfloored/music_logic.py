@@ -11,19 +11,6 @@ class Bank:
     def __init__(self, name, clips):
         self.name = name
         self.clips = clips
-    
-    def play_clip(self, position, repeat_style = RepeatStyle.RESTART):
-        #TODO: Increase number of channels if position is greater than the default of 10
-        
-        clip = self.clips[position]
-        if repeat_style == RepeatStyle.RESTART:
-            pygame.mixer.Channel(position).play(clip)
-
-        elif repeat_style == RepeatStyle.STOP:
-            if pygame.mixer.Channel(position).get_busy():
-                pygame.mixer.Channel(position).stop()
-            else:
-                pygame.mixer.Channel(position).play(clip)
 
 class MusicLogic:
     def __init__(self, root_audio_directory):
@@ -39,6 +26,29 @@ class MusicLogic:
 
         if len(self.banks) > 0:
             self.current_bank_position = 0
+
+    def play_clip(self, position, bank=None, repeat_style=None):
+        if bank == None:
+            bank = self.get_current_bank()
+        
+        if repeat_style == None:
+            repeat_style = self.repeat_style
+
+        try:
+            #TODO: Increase number of channels if position is greater than the default of 10
+        
+            clip = bank.clips[position]
+            if repeat_style == RepeatStyle.RESTART:
+                pygame.mixer.Channel(position).play(clip)
+
+            elif repeat_style == RepeatStyle.STOP:
+                if pygame.mixer.Channel(position).get_busy():
+                    pygame.mixer.Channel(position).stop()
+                else:
+                    pygame.mixer.Channel(position).play(clip)
+        except IndexError:
+            pass
+
 
     def increment_bank(self):
         maximum_bank_position = len(self.banks) - 1
