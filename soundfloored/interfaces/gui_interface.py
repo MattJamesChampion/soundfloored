@@ -13,6 +13,7 @@ class GuiInterface:
 
         body = tkinter.Tk()
         body.title("SoundFloored")
+        body.geometry("500x200")
 
         bank_frame = tkinter.Frame()
         bank_frame.pack(fill=tkinter.BOTH)
