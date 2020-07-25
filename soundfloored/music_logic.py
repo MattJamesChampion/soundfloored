@@ -8,6 +8,10 @@ class RepeatStyle(Enum):
     RESTART = 0
     STOP = 1
 
+class Clip:
+    def __init__(self, path):
+        self.sound = pygame.mixer.Sound(path)
+
 class Bank:
     def __init__(self, name, clips):
         self.name = name
@@ -42,13 +46,13 @@ class MusicLogic:
         
             clip = bank.clips[position]
             if repeat_style == RepeatStyle.RESTART:
-                pygame.mixer.Channel(position).play(clip)
+                pygame.mixer.Channel(position).play(clip.sound)
 
             elif repeat_style == RepeatStyle.STOP:
                 if pygame.mixer.Channel(position).get_busy():
                     pygame.mixer.Channel(position).stop()
                 else:
-                    pygame.mixer.Channel(position).play(clip)
+                    pygame.mixer.Channel(position).play(clip.sound)
         except IndexError:
             self._logger.debug(f"play_clip referenced an invalid index (requested position {position} of a bank with only {len(bank.clips)} elements)")
 
@@ -112,11 +116,11 @@ class MusicLogic:
             bank_path = os.path.join(self.root_audio_directory, bank)
             self._logger.debug(f"Loading bank {bank_path}")
             clips = []
-            for clip in os.listdir(bank_path):
-                clip_path = os.path.join(bank_path, clip)
-                self._logger.debug(f"Loading clip {clip_path}")
-                clip_sound = pygame.mixer.Sound(clip_path)
-                clips.append(clip_sound)
+            for relative_clip_path in os.listdir(bank_path):
+                full_clip_path = os.path.join(bank_path, relative_clip_path)
+                self._logger.debug(f"Loading clip {full_clip_path}")
+                clip = Clip(full_clip_path)
+                clips.append(clip)
 
             banks.append(Bank(bank_path, clips))
 
