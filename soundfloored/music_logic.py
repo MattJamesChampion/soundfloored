@@ -95,12 +95,15 @@ class MusicLogic:
             clip = bank.clips[position]
             if repeat_style == RepeatStyle.RESTART:
                 pygame.mixer.Channel(position).play(clip.sound)
+                self._logger.debug(f"Playing clip {clip.name}")
 
             elif repeat_style == RepeatStyle.STOP:
                 if pygame.mixer.Channel(position).get_busy():
                     pygame.mixer.Channel(position).stop()
+                    self._logger.debug(f"Stopping clip {clip.name}")
                 else:
                     pygame.mixer.Channel(position).play(clip.sound)
+                    self._logger.debug(f"Playing clip {clip.name}")
         except IndexError:
             self._logger.debug(f"play_clip referenced an invalid index (requested position {position} of a bank with only {len(bank.clips)} elements)")
 
