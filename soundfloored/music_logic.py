@@ -2,6 +2,24 @@ import os
 import pygame
 from enum import Enum
 import logging
+import re
+
+class MusicLogicHelpers:
+    @staticmethod
+    def clean_name(name):
+        matching_pattern = r"(\d+-)?(.*)"
+        replacement_pattern = r"\2"
+
+        try:
+            cleaned_name = re.sub(matching_pattern, replacement_pattern, name)
+
+            if cleaned_name != "":
+                return cleaned_name
+            else:
+                return name
+        except:
+            return name
+
 
 class RepeatStyle(Enum):
     #Values must be sequential starting from 0
@@ -14,7 +32,10 @@ class Clip:
 
         self._logger.debug(f"Loading clip {path}")
 
+        self.name = MusicLogicHelpers.clean_name(os.path.basename(os.path.normpath(path)))
         self.sound = pygame.mixer.Sound(path)
+
+        self._logger.debug(f"Clip {self.name} loaded")
 
 class Bank:
     def __init__(self, path):
@@ -27,7 +48,7 @@ class Bank:
             full_clip_path = os.path.join(path, relative_clip_path)
             clips.append(Clip(full_clip_path))
 
-        self.name = os.path.basename(os.path.normpath(path))
+        self.name = MusicLogicHelpers.clean_name(os.path.basename(os.path.normpath(path)))
         self.clips = clips
 
         self._logger.debug(f"Bank {self.name} loaded with {len(self.clips)} elements")
