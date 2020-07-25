@@ -10,16 +10,21 @@ class RepeatStyle(Enum):
 
 class Clip:
     def __init__(self, path):
+        self._logger = logging.getLogger(__name__)
+
+        self._logger.debug(f"Loading clip {path}")
+
         self.sound = pygame.mixer.Sound(path)
 
 class Bank:
     def __init__(self, path):
         self._logger = logging.getLogger(__name__)
 
+        self._logger.debug(f"Loading bank {path}")
+
         clips = []
         for relative_clip_path in os.listdir(path):
             full_clip_path = os.path.join(path, relative_clip_path)
-            self._logger.debug(f"Loading clip {full_clip_path}")
             clips.append(Clip(full_clip_path))
 
         self.name = path
@@ -123,7 +128,6 @@ class MusicLogic:
         
         for relative_bank_path in os.listdir(self.root_audio_directory):
             full_bank_path = os.path.join(self.root_audio_directory, relative_bank_path)
-            self._logger.debug(f"Loading bank {full_bank_path}")
             banks.append(Bank(full_bank_path))
 
         self.banks = banks
