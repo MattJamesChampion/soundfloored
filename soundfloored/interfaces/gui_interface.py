@@ -39,7 +39,9 @@ class GuiInterface:
         
         audio_clip_buttons = []
 
-        for position in range(len(self.music_logic.get_current_bank().clips)):
+        number_of_audio_clip_buttons = 4
+
+        for position in range(number_of_audio_clip_buttons):
             button = tkinter.Button(audio_clip_button_frame, text=str(position), command=partial(self.music_logic.play_clip, position))
             button.pack(side=tkinter.LEFT, expand=True, fill=tkinter.BOTH)
             audio_clip_buttons.append(button)
