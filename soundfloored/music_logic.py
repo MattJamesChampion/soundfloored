@@ -55,7 +55,7 @@ class MusicLogic:
         if repeat_style == None:
             repeat_style = self.repeat_style
 
-        self._logger.debug(f"play_clip executing with position {position}, bank {bank.name} and repeat_style {repeat_style}")
+        self._logger.debug(f"play_clip executing with position {position}, bank {bank.name} and repeat_style {repeat_style.name}")
         try:
             #TODO: Increase number of channels if position is greater than the default of 10
         
