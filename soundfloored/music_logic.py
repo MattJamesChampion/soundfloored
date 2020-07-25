@@ -1,20 +1,34 @@
 import os
 import pygame
+from enum import Enum
+
+class RepeatStyle(Enum):
+    #Values must be sequential starting from 0
+    RESTART = 0
+    STOP = 1
 
 class Bank:
     def __init__(self, name, clips):
         self.name = name
         self.clips = clips
     
-    def play_clip(self, position):
+    def play_clip(self, position, repeat_style = RepeatStyle.RESTART):
         #TODO: Increase number of channels if position is greater than the default of 10
-        clip = self.clips[position]
-        pygame.mixer.Channel(position).play(clip)
         
+        clip = self.clips[position]
+        if repeat_style == RepeatStyle.RESTART:
+            pygame.mixer.Channel(position).play(clip)
+
+        elif repeat_style == RepeatStyle.STOP:
+            if pygame.mixer.Channel(position).get_busy():
+                pygame.mixer.Channel(position).stop()
+            else:
+                pygame.mixer.Channel(position).play(clip)
 
 class MusicLogic:
     def __init__(self, root_audio_directory):
         self.root_audio_directory = root_audio_directory
+        self.repeat_style = RepeatStyle.RESTART
         self.banks = []
 
         self.current_bank_position = None
@@ -52,6 +66,24 @@ class MusicLogic:
     @current_bank_position.setter
     def current_bank_position(self, value):
         self._current_bank = value
+
+    def move_next_repeat_style(self):
+        maximum_repeat_style = len(RepeatStyle) - 1
+        if self.repeat_style.value == maximum_repeat_style:
+            self.repeat_style = RepeatStyle(0)
+        else:
+            self.repeat_style = RepeatStyle(self.repeat_style.value + 1)
+
+        return self.repeat_style
+    
+    def move_previous_repeat_style(self):
+        maximum_repeat_style = len(RepeatStyle) - 1
+        if self.repeat_style.value == 0:
+            self.repeat_style = RepeatStyle(maximum_repeat_style)
+        else:
+            self.repeat_style = RepeatStyle(self.repeat_style.value - 1)
+
+        return self.repeat_style
 
     def load_banks(self):
         pygame.mixer.init()

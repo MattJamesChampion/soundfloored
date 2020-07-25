@@ -1,4 +1,5 @@
 import pygame
+from ..music_logic import RepeatStyle
 
 class KeyboardInterface:
     def __init__(self, music_logic):
@@ -7,7 +8,6 @@ class KeyboardInterface:
     def start(self):
         pygame.display.init()
         screen = pygame.display.set_mode((1,1))
-        current_bank = self.music_logic.get_current_bank()
 
         available_clip_keys = [
             pygame.K_a,
@@ -20,12 +20,17 @@ class KeyboardInterface:
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_1:
+                        self.music_logic.move_previous_repeat_style()
+                    if event.key == pygame.K_4:
+                        self.music_logic.move_next_repeat_style()
                     if event.key == pygame.K_q:
-                        current_bank = self.music_logic.decrement_bank()
+                        self.music_logic.decrement_bank()
                     if event.key == pygame.K_r:
-                        current_bank = self.music_logic.increment_bank()
+                        self.music_logic.increment_bank()
                     try:
                         clip_position = available_clip_keys.index(event.key)
-                        current_bank.play_clip(clip_position)
-                    except:
+                        current_bank = self.music_logic.get_current_bank()
+                        current_bank.play_clip(clip_position, self.music_logic.repeat_style)
+                    except (IndexError, ValueError):
                         pass
