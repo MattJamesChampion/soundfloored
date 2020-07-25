@@ -81,6 +81,14 @@ class MusicLogic:
         if len(self.banks) > 0:
             self.current_bank_position = 0
 
+    def _play_channel(self, channel, clip):
+        self._logger.debug(f"Playing clip {clip.name} on channel {channel}")
+        pygame.mixer.Channel(channel).play(clip.sound)
+
+    def _stop_channel(self, channel):
+        self._logger.debug(f"Stopping clip on channel {channel}")
+        pygame.mixer.Channel(channel).stop()
+
     def play_clip(self, position, bank=None, repeat_style=None):
         if bank == None:
             bank = self.get_current_bank()
@@ -94,16 +102,13 @@ class MusicLogic:
         
             clip = bank.clips[position]
             if repeat_style == RepeatStyle.RESTART:
-                pygame.mixer.Channel(position).play(clip.sound)
-                self._logger.debug(f"Playing clip {clip.name}")
+                self._play_channel(position, clip)
 
             elif repeat_style == RepeatStyle.STOP:
                 if pygame.mixer.Channel(position).get_busy():
-                    pygame.mixer.Channel(position).stop()
-                    self._logger.debug(f"Stopping clip {clip.name}")
+                    self._stop_channel(position)
                 else:
-                    pygame.mixer.Channel(position).play(clip.sound)
-                    self._logger.debug(f"Playing clip {clip.name}")
+                    self._play_channel(position, clip)
         except IndexError:
             self._logger.debug(f"play_clip referenced an invalid index (requested position {position} of a bank with only {len(bank.clips)} elements)")
 
