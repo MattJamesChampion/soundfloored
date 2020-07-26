@@ -25,6 +25,10 @@ class RepeatStyle(Enum):
     #Values must be sequential starting from 0
     RESTART = 0
     STOP = 1
+    
+class MusicLogicSettings:
+    def __init__(self, root_audio_directory):
+        self.root_audio_directory = root_audio_directory
 
 class Clip:
     def __init__(self, path):
@@ -66,9 +70,9 @@ class Bank:
             raise
 
 class MusicLogic:
-    def __init__(self, root_audio_directory):
+    def __init__(self, music_logic_settings):
         self._logger = logging.getLogger(__name__)
-        self.root_audio_directory = root_audio_directory
+        self.root_audio_directory = music_logic_settings.root_audio_directory
         self.repeat_style = RepeatStyle.RESTART
         self.banks = []
         self._manually_stopped_channels = set()

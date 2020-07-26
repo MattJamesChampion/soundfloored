@@ -1,7 +1,7 @@
 import configparser
 import logging
 import sys
-from soundfloored.music_logic import MusicLogic
+from soundfloored.music_logic import MusicLogic, MusicLogicSettings
 from soundfloored.interfaces.keyboard_interface import KeyboardInterface
 from soundfloored.interfaces.gui_interface import GuiInterface
 
@@ -30,7 +30,8 @@ def main():
     settings = get_settings("settings.ini")
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    music_logic = MusicLogic(settings.root_audio_directory)
+    music_logic_settings = MusicLogicSettings(settings.root_audio_directory)
+    music_logic = MusicLogic(music_logic_settings)
 
     interface = None
 
