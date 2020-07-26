@@ -15,6 +15,12 @@ class GuiInterface:
         body.title("SoundFloored")
         body.geometry("500x200")
 
+        control_frame = tkinter.Frame()
+        control_frame.pack(fill=tkinter.BOTH)
+
+        button_load_banks = tkinter.Button(control_frame, text="Load Banks", command=self.music_logic.load_banks)
+        button_load_banks.pack(side=tkinter.LEFT, expand=True, fill=tkinter.BOTH)
+
         bank_frame = tkinter.Frame()
         bank_frame.pack(fill=tkinter.BOTH)
 
