@@ -26,9 +26,19 @@ class RepeatStyle(Enum):
     RESTART = 0
     STOP = 1
     
+DEFAULT_REPEAT_STYLE = RepeatStyle.STOP
+
 class MusicLogicSettings:
-    def __init__(self, root_audio_directory):
+    def __init__(self, root_audio_directory, initial_repeat_style=DEFAULT_REPEAT_STYLE):
+        self._logger = logging.getLogger(__name__)
+
         self.root_audio_directory = root_audio_directory
+
+        if initial_repeat_style != None:
+            self.initial_repeat_style = initial_repeat_style
+        else:
+            self._logger.debug(f"MusicLogicSettings created with an initial_repeat_style of None, modifying value to {DEFAULT_REPEAT_STYLE.name}")
+            self.initial_repeat_style = DEFAULT_REPEAT_STYLE
 
 class Clip:
     def __init__(self, path):
@@ -73,7 +83,7 @@ class MusicLogic:
     def __init__(self, music_logic_settings):
         self._logger = logging.getLogger(__name__)
         self.root_audio_directory = music_logic_settings.root_audio_directory
-        self.repeat_style = RepeatStyle.RESTART
+        self.repeat_style = music_logic_settings.initial_repeat_style
         self.banks = []
         self._manually_stopped_channels = set()
 
