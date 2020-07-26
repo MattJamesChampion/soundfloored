@@ -1,6 +1,7 @@
 import configparser
 import logging
 import sys
+from enum import Enum
 from soundfloored.music_logic import MusicLogic, MusicLogicSettings, RepeatStyle
 from soundfloored.interfaces.keyboard_interface import KeyboardInterface
 from soundfloored.interfaces.gui_interface import GuiInterface
@@ -33,6 +34,10 @@ def get_settings(path):
 
     return Settings(config_parser)
 
+class Interfaces(Enum):
+    KEYBOARD = 0,
+    GUI = 1
+
 def main():
     settings = get_settings("settings.ini")
 
@@ -43,12 +48,13 @@ def main():
     interface = None
 
     interface_dict = {
-        "keyboard": KeyboardInterface,
-        "gui": GuiInterface
+        Interfaces.KEYBOARD: KeyboardInterface,
+        Interfaces.GUI: GuiInterface
     }
 
     try:
-        interface_class = interface_dict[settings.interface.lower()]
+        interface_enum_instance = Interfaces[settings.interface.upper()]
+        interface_class = interface_dict[interface_enum_instance]
         logging.debug(f"Creating instance of {interface_class.__name__}")
         interface = interface_class(music_logic)
     except:
