@@ -42,10 +42,10 @@ def main():
 
     interface = None
 
-    if settings.interface == "keyboard":
+    if settings.interface.lower() == "keyboard":
         logging.debug("Creating instance of KeyboardInterface")
         interface = KeyboardInterface(music_logic)
-    elif settings.interface == "gui":
+    elif settings.interface.lower() == "gui":
         logging.debug("Creating instance of GuiInterface")
         interface = GuiInterface(music_logic)
 
