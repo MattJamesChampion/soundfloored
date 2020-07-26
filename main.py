@@ -42,12 +42,18 @@ def main():
 
     interface = None
 
-    if settings.interface.lower() == "keyboard":
-        logging.debug("Creating instance of KeyboardInterface")
-        interface = KeyboardInterface(music_logic)
-    elif settings.interface.lower() == "gui":
-        logging.debug("Creating instance of GuiInterface")
-        interface = GuiInterface(music_logic)
+    interface_dict = {
+        "keyboard": KeyboardInterface,
+        "gui": GuiInterface
+    }
+
+    try:
+        interface_class = interface_dict[settings.interface.lower()]
+        logging.debug(f"Creating instance of {interface_class.__name__}")
+        interface = interface_class(music_logic)
+    except:
+        logging.error(f"Could not load interface {settings.interface}")
+        raise
 
     interface.start()
 
