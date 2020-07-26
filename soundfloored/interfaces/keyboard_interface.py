@@ -14,6 +14,7 @@ class KeyboardInterface:
             pygame.K_q: self.music_logic.decrement_bank,
             pygame.K_r: self.music_logic.increment_bank,
             pygame.K_SPACE: self.music_logic.stop_all_clips,
+            pygame.K_F5: self.music_logic.load_banks
         }
 
         available_clip_keys = [
