@@ -71,6 +71,7 @@ class MusicLogic:
         self.root_audio_directory = root_audio_directory
         self.repeat_style = RepeatStyle.RESTART
         self.banks = []
+        self._manually_stopped_channels = set()
 
         self.current_bank_position = None
 
@@ -87,30 +88,60 @@ class MusicLogic:
 
     def _stop_channel(self, channel):
         self._logger.debug(f"Stopping clip on channel {channel}")
+        self._manually_stopped_channels.add(channel)
         pygame.mixer.Channel(channel).stop()
 
-    def play_clip(self, position, bank=None, repeat_style=None):
+
+    def play_clip(self, position, bank=None, repeat_style=None, is_distinct_trigger=True):
         if bank == None:
             bank = self.get_current_bank()
         
         if repeat_style == None:
             repeat_style = self.repeat_style
 
-        self._logger.debug(f"play_clip executing with position {position}, bank {bank.name} and repeat_style {repeat_style.name}")
-        try:
-            #TODO: Increase number of channels if position is greater than the default of 10
-        
-            clip = bank.clips[position]
-            if repeat_style == RepeatStyle.RESTART:
-                self._play_channel(position, clip)
+        is_busy_channel = pygame.mixer.Channel(position).get_busy()
 
-            elif repeat_style == RepeatStyle.STOP:
-                if pygame.mixer.Channel(position).get_busy():
-                    self._stop_channel(position)
+        if is_distinct_trigger:
+            # Used to avoid thousands of identical log entries
+            self._logger.debug(f"play_clip executing with position {position}, bank {bank.name} and repeat_style {repeat_style.name}")
+
+        try:
+            clip = bank.clips[position]
+
+            if repeat_style == RepeatStyle.STOP:
+                if is_distinct_trigger:
+                    try:
+                        self._manually_stopped_channels.remove(position)
+                    except:
+                        pass
+
+                    if is_busy_channel:
+                        self._stop_channel(position)
+                    else:
+                        self._play_channel(position, clip)
                 else:
+                    if is_busy_channel:
+                        return
+                    else:
+                        # Drop any requests that come in after manually stopping a channel
+                        # until it has been manually started again (to prevent a channel from
+                        # starting a split second after being stopped from the same button press)
+                        if position in self._manually_stopped_channels:
+                            return
+                        else:
+                            self._play_channel(position, clip)
+            elif repeat_style == RepeatStyle.RESTART:
+                if is_distinct_trigger:
                     self._play_channel(position, clip)
+                else:
+                    if is_busy_channel:
+                        return
+                    else:
+                        self._play_channel(position, clip)
         except IndexError:
-            self._logger.debug(f"play_clip referenced an invalid index (requested position {position} of a bank with only {len(bank.clips)} elements)")
+            if is_distinct_trigger:
+                # Used to avoid thousands of identical log entries
+                self._logger.debug(f"play_clip referenced an invalid index (requested position {position} of a bank with only {len(bank.clips)} elements)")
 
 
     def increment_bank(self):

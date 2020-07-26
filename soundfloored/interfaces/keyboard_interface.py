@@ -34,6 +34,9 @@ class KeyboardInterface:
 
                     try:
                         clip_position = available_clip_keys.index(event.key)
-                        self.music_logic.play_clip(clip_position)
+                        self.music_logic.play_clip(clip_position, is_distinct_trigger=True)
                     except (IndexError, ValueError):
                         pass
+            for available_clip_key in available_clip_keys:
+                if pygame.key.get_pressed()[available_clip_key]:
+                    self.music_logic.play_clip(clip_position, is_distinct_trigger=False)
