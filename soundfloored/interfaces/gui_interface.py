@@ -7,19 +7,38 @@ class GuiInterface:
     def __init__(self, music_logic):
         self.music_logic = music_logic
 
+    def update_screen(self):
+        line_1 = f"BNK:{self.music_logic.get_current_bank().name}"
+        line_2 = f"RPT:{self.music_logic.repeat_style.name}"
+
+        #Add same limiations as a 2x16 screen
+        self.screen_line_1.set(line_1[:16])
+        self.screen_line_2.set(line_2[:16])
+        self.body.after(10, self.update_screen)
+
     def start(self):
         pygame.display.init()
         screen = pygame.display.set_mode((1,1))
 
-        body = tkinter.Tk()
-        body.title("SoundFloored")
-        body.geometry("500x200")
+        self.body = tkinter.Tk()
+        self.body.title("SoundFloored")
+        self.body.geometry("500x200")
 
         control_frame = tkinter.Frame()
         control_frame.pack(fill=tkinter.BOTH)
 
         button_load_banks = tkinter.Button(control_frame, text="Load Banks", command=self.music_logic.load_banks)
         button_load_banks.pack(side=tkinter.LEFT, expand=True, fill=tkinter.BOTH)
+
+        screen_frame = tkinter.Frame()
+        screen_frame.pack(fill=tkinter.BOTH)
+
+        self.screen_line_1 = tkinter.StringVar()
+        label_screen_line_1 = tkinter.Label(screen_frame, textvariable=self.screen_line_1)
+        label_screen_line_1.pack(side=tkinter.TOP, expand=True, fill=tkinter.BOTH)
+        self.screen_line_2 = tkinter.StringVar()
+        label_screen_line_2 = tkinter.Label(screen_frame, textvariable=self.screen_line_2)
+        label_screen_line_2.pack(side=tkinter.TOP, expand=True, fill=tkinter.BOTH)
 
         bank_frame = tkinter.Frame()
         bank_frame.pack(fill=tkinter.BOTH)
@@ -58,4 +77,6 @@ class GuiInterface:
         button_stop = tkinter.Button(stop_frame, text="Stop", command=self.music_logic.stop_all_clips)
         button_stop.pack(side=tkinter.LEFT, expand=True, fill=tkinter.BOTH)
 
-        body.mainloop()
+        self.body.after(0, self.update_screen)
+
+        self.body.mainloop()
