@@ -5,6 +5,7 @@ from enum import Enum
 from soundfloored.music_logic import MusicLogic, MusicLogicSettings, RepeatStyle
 from soundfloored.interfaces.keyboard_interface import KeyboardInterface
 from soundfloored.interfaces.gui_interface import GuiInterface
+from soundfloored.interfaces.rpi_interface import RpiInterface
 
 class Settings:
     def __init__(self, config_parser):
@@ -36,7 +37,8 @@ def get_settings(path):
 
 class Interfaces(Enum):
     KEYBOARD = 0,
-    GUI = 1
+    GUI = 1,
+    RPI = 2
 
 def main():
     settings = get_settings("settings.ini")
@@ -49,7 +51,8 @@ def main():
 
     interface_dict = {
         Interfaces.KEYBOARD: KeyboardInterface,
-        Interfaces.GUI: GuiInterface
+        Interfaces.GUI: GuiInterface,
+        Interfaces.RPI: RpiInterface
     }
 
     try:
