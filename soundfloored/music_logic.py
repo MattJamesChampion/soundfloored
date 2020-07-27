@@ -209,7 +209,13 @@ class MusicLogic:
         return self.repeat_style
 
     def load_banks(self):
-        pygame.mixer.init()
+        # The below is done to resolve issues with playback slow to start
+        # on certain devices (such as on Raspberry Pis)
+        # https://stackoverflow.com/a/55125080
+        pygame.mixer.pre_init(22050, -16, 2, 1024)
+        pygame.init()
+        pygame.mixer.quit()
+        pygame.mixer.init(22050, -16, 2, 1024)
         
         banks = []
         self._logger.debug(f"Loading banks (with root directory {self.root_audio_directory})")
