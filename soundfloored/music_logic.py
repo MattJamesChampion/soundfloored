@@ -63,7 +63,7 @@ class Bank:
 
         try:
             clips = []
-            for relative_clip_path in os.listdir(path):
+            for relative_clip_path in sorted(os.listdir(path)):
                 full_clip_path = os.path.join(path, relative_clip_path)
                 try:
                     clip = Clip(full_clip_path)
