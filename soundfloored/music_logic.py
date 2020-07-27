@@ -220,7 +220,7 @@ class MusicLogic:
         banks = []
         self._logger.debug(f"Loading banks (with root directory {self.root_audio_directory})")
         
-        for relative_bank_path in os.listdir(self.root_audio_directory):
+        for relative_bank_path in sorted(os.listdir(self.root_audio_directory)):
             full_bank_path = os.path.join(self.root_audio_directory, relative_bank_path)
             try:
                 bank = Bank(full_bank_path)
