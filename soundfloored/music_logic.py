@@ -224,7 +224,10 @@ class MusicLogic:
             full_bank_path = os.path.join(self.root_audio_directory, relative_bank_path)
             try:
                 bank = Bank(full_bank_path)
-                banks.append(bank)
+                if len(bank.clips) > 0:
+                    banks.append(bank)
+                else:
+                    self._logger.debug(f"Bank {bank.name} has 0 clips, skipping")
             except:
                 self._logger.error(f"Bank could not be loaded with path {full_bank_path}, skipping")
 
