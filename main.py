@@ -1,6 +1,7 @@
 import configparser
 import logging
 import sys
+import os
 from enum import Enum
 from soundfloored.music_logic import MusicLogic, MusicLogicSettings, RepeatStyle
 from soundfloored.interfaces.keyboard_interface import KeyboardInterface
@@ -41,7 +42,7 @@ class Interfaces(Enum):
     RPI = 2
 
 def main():
-    settings = get_settings("settings.ini")
+    settings = get_settings(os.path.join(os.path.dirname(__file__), "settings.ini"))
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     music_logic_settings = MusicLogicSettings(settings.root_audio_directory, settings.initial_repeat_style)
