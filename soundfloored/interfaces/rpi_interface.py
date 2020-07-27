@@ -16,9 +16,9 @@ class RpiInterface:
         control_button_2_pin = 20
 
         GPIO.setup(control_button_1_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(control_button_1_pin, GPIO.FALLING, callback=lambda channel: self.music_logic.decrement_bank())
+        GPIO.add_event_detect(control_button_1_pin, GPIO.FALLING, callback=lambda channel: self.music_logic.decrement_bank(), bouncetime=200)
         GPIO.setup(control_button_2_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(control_button_2_pin, GPIO.FALLING, callback=lambda channel: self.music_logic.increment_bank())
+        GPIO.add_event_detect(control_button_2_pin, GPIO.FALLING, callback=lambda channel: self.music_logic.increment_bank(), bouncetime=200)
 
         audio_clip_button_pins = [19, 13, 6, 5]
 
@@ -28,7 +28,7 @@ class RpiInterface:
 
         for index, audio_clip_button_pin in enumerate(audio_clip_button_pins):
             GPIO.setup(audio_clip_button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.add_event_detect(audio_clip_button_pin, GPIO.FALLING, callback=partial(callback_wrapper, index))
+            GPIO.add_event_detect(audio_clip_button_pin, GPIO.FALLING, callback=partial(callback_wrapper, index), bouncetime=200)
         
         while True:
             pass
