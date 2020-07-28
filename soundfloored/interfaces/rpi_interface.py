@@ -1,6 +1,7 @@
 import pygame
 import RPi.GPIO as GPIO
 from functools import partial
+import time
 import os
 import signal
 
@@ -15,6 +16,11 @@ try:
 except AttributeError:
     # Windows compatibility
     pass
+
+# If the button is connected to a GPIO pin and ground, the corresponding value when the
+# button is pressed is False. If the button is connected to 3.3v, the value will be True.
+BUTTONS_CONNECTED_TO_GROUND = True
+INPUT_VALUE_WHEN_BUTTON_PRESSED = not BUTTONS_CONNECTED_TO_GROUND
 
 class RpiInterface:
     def __init__(self, music_logic):
@@ -45,4 +51,11 @@ class RpiInterface:
             GPIO.add_event_detect(audio_clip_button_pin, GPIO.FALLING, callback=partial(callback_wrapper, index), bouncetime=200)
         
         while True:
-            pass
+            for index, audio_clip_button_pin in enumerate(audio_clip_button_pins):
+                if GPIO.input(audio_clip_button_pin) == INPUT_VALUE_WHEN_BUTTON_PRESSED:
+                    # Sleep for just long enough to give the event detector a chance to
+                    # execute the callback, rather than stacking multiple calls
+                    # to play_clip at the same time
+                    time.sleep(0.01)
+                    self.music_logic.play_clip(index, is_distinct_trigger=False)
+                    
