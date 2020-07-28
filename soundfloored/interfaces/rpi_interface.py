@@ -1,6 +1,20 @@
 import pygame
 import RPi.GPIO as GPIO
 from functools import partial
+import os
+import signal
+
+# Used to resolve an issue when starting the RpiInterface from systemd where the service would
+# receive a SIGHUP upon pygame.init() (or in this case pygame.display.init())
+# https://stackoverflow.com/q/39198961
+def handler(signum, frame):
+    pass
+
+try:
+    signal.signal(signal.SIGHUP, handler)
+except AttributeError:
+    # Windows compatibility
+    pass
 
 class RpiInterface:
     def __init__(self, music_logic):
