@@ -7,8 +7,8 @@ class RpiInterface:
         self.music_logic = music_logic
 
     def start(self):
+        os.putenv('SDL_VIDEODRIVER', 'fbcon')
         pygame.display.init()
-        screen = pygame.display.set_mode((1,1))
 
         GPIO.setmode(GPIO.BCM)
 
