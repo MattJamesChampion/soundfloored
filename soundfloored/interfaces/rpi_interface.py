@@ -29,6 +29,11 @@ class RpiInterface:
     def __init__(self, music_logic):
         self.music_logic = music_logic
 
+    def draw_screen(self):
+        self.clear_screen()
+        self.write_to_screen(self.music_logic.get_current_bank().name, line=0)
+        self.write_to_screen(f"RS: {self.music_logic.repeat_style.name}", line=1)
+        
     def write_to_screen(self, text, line=None):
         written_characters = 0
         total_available_characters = 0
