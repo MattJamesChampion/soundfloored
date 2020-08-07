@@ -207,6 +207,14 @@ class MusicLogic:
         self._logger.debug(f"Repeat style set to {self.repeat_style.name}")
 
         return self.repeat_style
+    
+    @property
+    def repeat_style(self):
+        return self._repeat_style
+
+    @repeat_style.setter
+    def repeat_style(self, value):
+        self._repeat_style = value
 
     def load_banks(self):
         # The below is done to resolve issues with playback slow to start
