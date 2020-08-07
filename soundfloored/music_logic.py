@@ -82,6 +82,8 @@ class Bank:
 class MusicLogic:
     def __init__(self, music_logic_settings):
         self._logger = logging.getLogger(__name__)
+        self.before_state_change_functions = []
+        self.after_state_change_functions = []
         self.root_audio_directory = music_logic_settings.root_audio_directory
         self.repeat_style = music_logic_settings.initial_repeat_style
         self.banks = []
@@ -155,6 +157,35 @@ class MusicLogic:
                 # Used to avoid thousands of identical log entries
                 self._logger.debug(f"play_clip referenced an invalid index (requested position {position} of a bank with only {len(bank.clips)} elements)")
 
+    def _before_state_change(self):
+        for before_state_change_function in self.before_state_change_functions:
+            try:
+                before_state_change_function()
+            except Exception as e:
+                before_state_change_function_name = "UnknownName"
+                if hasattr(before_state_change_function, '__qualname__'):
+                    before_state_change_function_name = before_state_change_function.__qualname__
+                    
+                error_message = "UnknownError"
+                if hasattr(e, 'message'):
+                    error_message = e.message
+                    
+                self._logger.error(f"before_state_change_function {before_state_change_function_name} threw an exception: {error_message}", exc_info=e)
+
+    def _after_state_change(self):
+        for after_state_change_function in self.after_state_change_functions:
+            try:
+                after_state_change_function()
+            except Exception as e:
+                after_state_change_function_name = "UnknownName"
+                if hasattr(after_state_change_function, '__qualname__'):
+                    after_state_change_function_name = after_state_change_function.__qualname__
+                    
+                error_message = "UnknownError"
+                if hasattr(e, 'message'):
+                    error_message = e.message
+                
+                self._logger.error(f"after_state_change_function {after_state_change_function_name} threw an exception: {error_message}", exc_info=e)
 
     def increment_bank(self):
         maximum_bank_position = len(self.banks) - 1
@@ -181,7 +212,9 @@ class MusicLogic:
 
     @current_bank_position.setter
     def current_bank_position(self, value):
+        self._before_state_change()
         self._current_bank = value
+        self._after_state_change()
         self._logger.debug(f"Bank position set to {self._current_bank}")
 
     def move_next_repeat_style(self):
@@ -212,7 +245,9 @@ class MusicLogic:
 
     @repeat_style.setter
     def repeat_style(self, value):
+        self._before_state_change()
         self._repeat_style = value
+        self._after_state_change()
 
     def load_banks(self):
         # The below is done to resolve issues with playback slow to start
