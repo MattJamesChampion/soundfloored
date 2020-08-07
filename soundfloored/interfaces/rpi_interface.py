@@ -4,6 +4,7 @@ from functools import partial
 import time
 import os
 import signal
+from RPLCD.gpio import CharLCD
 
 # Used to resolve an issue when starting the RpiInterface from systemd where the service would
 # receive a SIGHUP upon pygame.init() (or in this case pygame.display.init())
@@ -21,6 +22,8 @@ except AttributeError:
 # button is pressed is False. If the button is connected to 3.3v, the value will be True.
 BUTTONS_CONNECTED_TO_GROUND = True
 INPUT_VALUE_WHEN_BUTTON_PRESSED = not BUTTONS_CONNECTED_TO_GROUND
+SCREEN_COLUMNS = 16
+SCREEN_ROWS = 2
 
 class RpiInterface:
     def __init__(self, music_logic):
@@ -31,6 +34,14 @@ class RpiInterface:
         pygame.display.init()
 
         GPIO.setmode(GPIO.BCM)
+        self._lcd = CharLCD(pin_rs=7,
+                      pin_e=8,
+                      pins_data=[25, 24, 23, 18],
+                      numbering_mode=GPIO.BCM,
+                      cols=SCREEN_COLUMNS,
+                      rows=SCREEN_ROWS)
+        self._lcd.clear()
+        self._lcd.write_string('Welcome to\r\nSoundFloored')
 
         control_button_1_pin = 21
         control_button_2_pin = 20
