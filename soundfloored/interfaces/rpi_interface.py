@@ -29,6 +29,22 @@ class RpiInterface:
     def __init__(self, music_logic):
         self.music_logic = music_logic
 
+    def write_to_screen(self, text, line=None):
+        written_characters = 0
+        total_available_characters = 0
+        
+        if line in range(SCREEN_ROWS):
+            total_available_characters = SCREEN_COLUMNS
+            self._lcd.cursor_pos = (line, 0)
+        elif line is None:
+            total_available_characters = SCREEN_COLUMNS * SCREEN_ROWS
+            self._lcd.home()
+        else:
+            raise AttributeError(f"line must be between 0 and {SCREEN_COLUMNS}")
+
+        trimmed_text = text[:total_available_characters]
+        self._lcd.write_string(trimmed_text)
+        
     def start(self):
         os.putenv('SDL_VIDEODRIVER', 'fbcon')
         pygame.display.init()
