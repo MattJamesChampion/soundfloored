@@ -5,6 +5,7 @@ import time
 import os
 import signal
 from RPLCD.gpio import CharLCD
+from multiprocessing import Process
 
 # Used to resolve an issue when starting the RpiInterface from systemd where the service would
 # receive a SIGHUP upon pygame.init() (or in this case pygame.display.init())
@@ -34,6 +35,10 @@ class RpiInterface:
         self.write_to_screen(self.music_logic.get_current_bank().name, line=0)
         self.write_to_screen(f"RS: {self.music_logic.repeat_style.name}", line=1)
         
+    def draw_screen_async(self):
+        p = Process(target=self.draw_screen)
+        p.start()
+
     def write_to_screen(self, text, line=None):
         written_characters = 0
         total_available_characters = 0
