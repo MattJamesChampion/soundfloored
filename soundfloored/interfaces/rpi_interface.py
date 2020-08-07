@@ -92,12 +92,18 @@ class RpiInterface:
             GPIO.setup(audio_clip_button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             GPIO.add_event_detect(audio_clip_button_pin, GPIO.FALLING, callback=partial(callback_wrapper, index), bouncetime=200)
         
-        while True:
-            for index, audio_clip_button_pin in enumerate(audio_clip_button_pins):
-                if GPIO.input(audio_clip_button_pin) == INPUT_VALUE_WHEN_BUTTON_PRESSED:
-                    # Sleep for just long enough to give the event detector a chance to
-                    # execute the callback, rather than stacking multiple calls
-                    # to play_clip at the same time
-                    time.sleep(0.01)
-                    self.music_logic.play_clip(index, is_distinct_trigger=False)
+        try:
+            while True:
+                for index, audio_clip_button_pin in enumerate(audio_clip_button_pins):
+                    if GPIO.input(audio_clip_button_pin) == INPUT_VALUE_WHEN_BUTTON_PRESSED:
+                        # Sleep for just long enough to give the event detector a chance to
+                        # execute the callback, rather than stacking multiple calls
+                        # to play_clip at the same time
+                        time.sleep(0.01)
+                        self.music_logic.play_clip(index, is_distinct_trigger=False)
+        except KeyboardInterrupt:
+            pass
+        finally:
+            self._lcd.close(clear=True)
+            GPIO.cleanup()
                     
