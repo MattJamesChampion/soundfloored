@@ -71,6 +71,8 @@ class RpiInterface:
                       rows=SCREEN_ROWS)
         self._lcd.clear()
         self._lcd.write_string('Welcome to\r\nSoundFloored')
+        time.sleep(1)
+        self.draw_screen_async()
 
         control_button_1_pin = 21
         control_button_2_pin = 20
