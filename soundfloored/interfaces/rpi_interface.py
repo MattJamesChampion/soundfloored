@@ -92,6 +92,7 @@ class RpiInterface:
             GPIO.setup(audio_clip_button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             GPIO.add_event_detect(audio_clip_button_pin, GPIO.FALLING, callback=partial(callback_wrapper, index), bouncetime=200)
         
+        self.music_logic.after_state_change_functions.append(self.draw_screen_async)
         try:
             while True:
                 for index, audio_clip_button_pin in enumerate(audio_clip_button_pins):
