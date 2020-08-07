@@ -45,6 +45,9 @@ class RpiInterface:
         trimmed_text = text[:total_available_characters]
         self._lcd.write_string(trimmed_text)
         
+    def clear_screen(self):
+        self._lcd.clear()
+
     def start(self):
         os.putenv('SDL_VIDEODRIVER', 'fbcon')
         pygame.display.init()
