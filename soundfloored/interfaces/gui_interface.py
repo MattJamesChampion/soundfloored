@@ -8,8 +8,8 @@ class GuiInterface:
         self.music_logic = music_logic
 
     def update_screen(self):
-        line_1 = f"BNK:{self.music_logic.get_current_bank().name}"
-        line_2 = f"RPT:{self.music_logic.repeat_style.name}"
+        line_1 = self.music_logic.get_current_bank().name
+        line_2 = f"RS: {self.music_logic.repeat_style.name}"
 
         #Add same limiations as a 2x16 screen
         self.screen_line_1.set(line_1[:16])
