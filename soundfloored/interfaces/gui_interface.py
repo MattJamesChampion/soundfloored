@@ -77,6 +77,7 @@ class GuiInterface:
         button_stop = tkinter.Button(stop_frame, text="Stop", command=self.music_logic.stop_all_clips)
         button_stop.pack(side=tkinter.LEFT, expand=True, fill=tkinter.BOTH)
 
-        self.body.after(0, self.update_screen)
+        self.music_logic.after_state_change_functions.append(self.update_screen)
+        self.update_screen()
 
         self.body.mainloop()
