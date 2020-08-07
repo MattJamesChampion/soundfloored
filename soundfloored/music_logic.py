@@ -86,7 +86,6 @@ class MusicLogic:
         self.repeat_style = music_logic_settings.initial_repeat_style
         self.banks = []
         self._manually_stopped_channels = set()
-
         self.current_bank_position = None
 
         pygame.init()
@@ -104,7 +103,6 @@ class MusicLogic:
         self._logger.debug(f"Stopping clip on channel {channel}")
         self._manually_stopped_channels.add(channel)
         pygame.mixer.Channel(channel).stop()
-
 
     def play_clip(self, position, bank=None, repeat_style=None, is_distinct_trigger=True):
         if bank == None:
