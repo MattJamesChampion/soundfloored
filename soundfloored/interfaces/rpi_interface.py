@@ -63,9 +63,9 @@ class RpiInterface:
         pygame.display.init()
 
         GPIO.setmode(GPIO.BCM)
-        self._lcd = CharLCD(pin_rs=7,
-                      pin_e=8,
-                      pins_data=[25, 24, 23, 18],
+        self._lcd = CharLCD(pin_rs=17,
+                      pin_e=27,
+                      pins_data=[22, 10, 9, 11],
                       numbering_mode=GPIO.BCM,
                       cols=SCREEN_COLUMNS,
                       rows=SCREEN_ROWS)
@@ -74,15 +74,15 @@ class RpiInterface:
         time.sleep(1)
         self.draw_screen_async()
 
-        control_button_1_pin = 21
-        control_button_2_pin = 20
+        control_button_1_pin = 2
+        control_button_2_pin = 26
 
         GPIO.setup(control_button_1_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(control_button_1_pin, GPIO.FALLING, callback=lambda channel: self.music_logic.decrement_bank(), bouncetime=200)
         GPIO.setup(control_button_2_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(control_button_2_pin, GPIO.FALLING, callback=lambda channel: self.music_logic.increment_bank(), bouncetime=200)
 
-        audio_clip_button_pins = [19, 13, 6, 5]
+        audio_clip_button_pins = [14, 15, 20, 21]
 
         # Used to discard the channel value that is automatically provided by
         # add_event_detect to the callback function
