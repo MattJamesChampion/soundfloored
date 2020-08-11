@@ -29,10 +29,11 @@ class RepeatStyle(Enum):
 DEFAULT_REPEAT_STYLE = RepeatStyle.STOP
 
 class MusicLogicSettings:
-    def __init__(self, root_audio_directory, initial_repeat_style=DEFAULT_REPEAT_STYLE):
+    def __init__(self, root_audio_directory, backup_root_audio_directory=None, initial_repeat_style=DEFAULT_REPEAT_STYLE):
         self._logger = logging.getLogger(__name__)
 
         self.root_audio_directory = root_audio_directory
+        self.backup_root_audio_directory = backup_root_audio_directory
 
         if initial_repeat_style != None:
             self.initial_repeat_style = initial_repeat_style
@@ -84,18 +85,25 @@ class MusicLogic:
         self._logger = logging.getLogger(__name__)
         self.before_state_change_functions = []
         self.after_state_change_functions = []
-        self.root_audio_directory = music_logic_settings.root_audio_directory
-        self.repeat_style = music_logic_settings.initial_repeat_style
-        self.banks = []
-        self._manually_stopped_channels = set()
-        self.current_bank_position = None
-
+        
         pygame.init()
-
-        self.load_banks()
-
-        if len(self.banks) > 0:
-            self.current_bank_position = 0
+        
+        try:
+            self.banks = self.load_banks(music_logic_settings.root_audio_directory)
+            self.root_audio_directory = music_logic_settings.root_audio_directory
+        except:
+            self._logger.error(f"Could not load banks from root audio directory")
+            try:
+                self.banks = self.load_banks(music_logic_settings.backup_root_audio_directory)
+                self.root_audio_directory = music_logic_settings.backup_root_audio_directory
+            except:
+                self._logger.error(f"Could not load banks from backup root audio directory")
+                raise
+        
+        self.repeat_style = music_logic_settings.initial_repeat_style
+        self._manually_stopped_channels = set()
+    
+        self.current_bank_position = 0
 
     def _play_channel(self, channel, clip):
         self._logger.debug(f"Playing clip {clip.name} on channel {channel}")
@@ -249,7 +257,7 @@ class MusicLogic:
         self._repeat_style = value
         self._after_state_change()
 
-    def load_banks(self):
+    def load_banks(self, root_directory):        
         # The below is done to resolve issues with playback slow to start
         # on certain devices (such as on Raspberry Pis)
         # https://stackoverflow.com/a/55125080
@@ -259,10 +267,10 @@ class MusicLogic:
         pygame.mixer.init(22050, -16, 2, 1024)
         
         banks = []
-        self._logger.debug(f"Loading banks (with root directory {self.root_audio_directory})")
+        self._logger.debug(f"Loading banks (with root directory {root_directory})")
         
-        for relative_bank_path in sorted(os.listdir(self.root_audio_directory)):
-            full_bank_path = os.path.join(self.root_audio_directory, relative_bank_path)
+        for relative_bank_path in sorted(os.listdir(root_directory)):
+            full_bank_path = os.path.join(root_directory, relative_bank_path)
             try:
                 bank = Bank(full_bank_path)
                 if len(bank.clips) > 0:
@@ -272,7 +280,10 @@ class MusicLogic:
             except:
                 self._logger.error(f"Bank could not be loaded with path {full_bank_path}, skipping")
 
-        self.banks = banks
+        if len(banks) == 0:
+            raise RuntimeError(f"No banks were loaded from root directory {root_directory}")
+
+        return banks
 
         try:
             if self.current_bank_position > len(self.banks) - 1:

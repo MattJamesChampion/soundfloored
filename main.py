@@ -16,6 +16,12 @@ class Settings:
         except KeyError:
             self._logger.error("Could not find the root audio directory setting")
             raise
+        
+        try:
+            self.backup_root_audio_directory = config_parser["DEFAULT"]["BackupRootAudioDirectory"]
+        except KeyError:
+            self._logger.debug("Could not find the backup root audio directory setting, setting value to None")
+            self.backup_root_audio_directory = None
 
         try:
             self.interface = config_parser["DEFAULT"]["Interface"]
@@ -45,7 +51,7 @@ def main():
     settings = get_settings(os.path.join(os.path.dirname(__file__), "settings.ini"))
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    music_logic_settings = MusicLogicSettings(settings.root_audio_directory, settings.initial_repeat_style)
+    music_logic_settings = MusicLogicSettings(settings.root_audio_directory, backup_root_audio_directory=settings.backup_root_audio_directory, initial_repeat_style=settings.initial_repeat_style)
     music_logic = MusicLogic(music_logic_settings)
 
     interface = None
